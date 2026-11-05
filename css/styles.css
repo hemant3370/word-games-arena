@@ -413,6 +413,10 @@ img {
     margin-bottom: 2.5rem;
 }
 
+.hero-store-badges {
+    margin: 0 0 2.5rem;
+}
+
 .hero-rating {
     display: flex;
     align-items: center;
@@ -503,7 +507,10 @@ img {
 
 .screenshot-lightbox-image {
     max-width: 100%;
+    max-height: 72vh;
+    width: auto;
     height: auto;
+    margin: 0 auto;
 }
 
 .screenshot-lightbox-image.screenshot-landscape-image {
@@ -2228,6 +2235,11 @@ body[data-site-classes~="dark-mode"] .social-link:hover {
     filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
 }
 
+.store-badge.google-play-badge {
+    height: 70px;
+    margin: -10px;
+}
+
 .store-badge-dark-mode {
     display: none;
 }
@@ -2266,6 +2278,11 @@ body[data-site-classes~="light-mode"] .store-badge-dark-mode {
 
     .store-badge {
         height: 45px;
+    }
+
+    .store-badge.google-play-badge {
+        height: 63px;
+        margin: -9px;
     }
 }
 
