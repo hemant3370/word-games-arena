@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>Download Word Games Arena</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZG9H20SPQ"></script>
     <script>
       (() => {
-        const appStoreUrl = "https://apps.apple.com/app/id6823714719";
-        const playStoreUrl = "https://play.google.com/store/apps/details?id=com.hemant3370.wordgames";
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag("js", new Date());
+        window.gtag("config", "G-EZG9H20SPQ");
+
+        const query = new URLSearchParams(window.location.search);
+        const appStoreUrl = new URL("https://apps.apple.com/app/id6823714719");
+        const playStoreUrl = new URL("https://play.google.com/store/apps/details?id=com.hemant3370.wordgames");
         const downloadPageUrl = "../#download";
         const userAgent = navigator.userAgent || navigator.vendor || "";
         const isAndroid = /android/i.test(userAgent);
@@ -16,22 +23,60 @@
           /iPad|iPhone|iPod/.test(userAgent) ||
           (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
+        ["pt", "ct", "mt"].forEach((name) => {
+          if (query.has(name)) appStoreUrl.searchParams.set(name, query.get(name));
+        });
+
+        ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"].forEach((name) => {
+          if (query.has(name)) playStoreUrl.searchParams.set(name, query.get(name));
+        });
+
+        let destinationStore = "website";
+        let devicePlatform = "desktop";
+        let destinationUrl = downloadPageUrl;
+
         if (isIOS) {
-          window.location.replace(appStoreUrl);
+          destinationStore = "app_store";
+          devicePlatform = "ios";
+          destinationUrl = appStoreUrl.toString();
         } else if (isAndroid) {
-          window.location.replace(playStoreUrl);
-        } else {
-          window.location.replace(downloadPageUrl);
+          destinationStore = "play_store";
+          devicePlatform = "android";
+          destinationUrl = playStoreUrl.toString();
         }
+
+        let redirected = false;
+        const redirect = () => {
+          if (redirected) return;
+          redirected = true;
+          window.location.replace(destinationUrl);
+        };
+
+        window.setTimeout(redirect, 1200);
+        window.gtag("event", "download_redirect", {
+          destination_store: destinationStore,
+          device_platform: devicePlatform,
+          link_url: destinationUrl,
+          campaign_source: query.get("utm_source") || "direct",
+          campaign_name: query.get("utm_campaign") || "none",
+          transport_type: "beacon",
+          event_callback: redirect,
+          event_timeout: 1000
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          document.querySelector("[data-fallback-store='app_store']").href = appStoreUrl.toString();
+          document.querySelector("[data-fallback-store='play_store']").href = playStoreUrl.toString();
+        });
       })();
     </script>
   </head>
   <body>
     <main>
       <h1>Download Word Games Arena</h1>
-      <p>Choose your app store:</p>
-      <p><a href="https://apps.apple.com/app/id6823714719">Download on the App Store</a></p>
-      <p><a href="https://play.google.com/store/apps/details?id=com.hemant3370.wordgames">Get it on Google Play</a></p>
+      <p>Opening the right app store for your device…</p>
+      <p><a href="https://apps.apple.com/app/id6823714719" data-fallback-store="app_store">Download on the App Store</a></p>
+      <p><a href="https://play.google.com/store/apps/details?id=com.hemant3370.wordgames" data-fallback-store="play_store">Get it on Google Play</a></p>
     </main>
   </body>
 </html>
